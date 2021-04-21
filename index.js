@@ -4,15 +4,15 @@ const connection = require('./mysql/connection');
 
 
 const queryAllEmployees = () => {
-    console.log('hello');
   connection.query('SELECT * FROM EmployeeTrackerDB.employee', (err, res) => {
     if (err) throw err;
-    res.forEach(({ id, title, salary, department_id }) => {
-      console.log(`${id} | ${title} | ${salary} | ${department_id}`);
+    res.forEach(({ first_name, last_name, role_id, manager_id }) => {
+      console.log(`${first_name} | ${last_name} | ${role_id} | ${manager_id}`);
     });
     start();
   });
 };
+
 // queryAllEmployees();
 const deleteEmployee = () => {
   connection.query('SELECT * EmployeeTrackerDB.employee', (selectError, employee) => {
@@ -50,7 +50,7 @@ const deleteEmployee = () => {
 };
 
 const updateRoles = () => {
-  connection.query('SELECT * FROM EmployeeTrackerDB.roles', (selectError, roles) => {
+  connection.query('SELECT * FROM EmployeeTrackerDB.employee', (selectError, employee) => {
     if (selectError) throw selectError;
     inquirer
       .prompt([
@@ -58,16 +58,16 @@ const updateRoles = () => {
           type: 'list',
           name: 'roles',
           message: 'Select an employee to update',
-          choices: roles.map((roles) => ({
-            value: roles,
-            name: `${role.title} | ${role.salary} | ${role.department_id}`,
+          choices: employee.map((employee) => ({
+            value: employee,
+             name: `${first_name} | ${last_name} | ${role_id} | ${manager_id}`,
           })),
         },
         {
           name: 'title',
           type: 'input',
           message: 'What is the new title?',
-          default: (answers) => answers.roles.title,
+          default: (answers) => answers.employee.role_id,
         },
         {
           name: 'salary',
@@ -112,26 +112,32 @@ const updateRoles = () => {
   });
 };
 
-// Function to run query which adds a new row for "Peace of Mind".
+// Function to run query which adds a new row .
 const createEmployee = () => {
   inquirer
     .prompt([
       {
-        name: 'title',
+        name: 'first_name',
         type: 'input',
-        message: 'Enter new employees name:',
+        message: 'Enter new employees first name:',
       },
       {
-        name: 'salary',
+        name: 'last_name',
         type: 'input',
-        message: 'Enter the new employees salary',
+        message: 'Enter new employees last name:',
       },
       {
-        name: 'department_id',
+        name: 'role_id',
         type: 'input',
-        message: 'Enter the new employees department',
+        message: 'Enter the new employees role',
+      },
+      {
+        name: 'manager_id',
+        type: 'input',
+        message: 'Enter the new employees manager',
       },
     ])
+    
     .then((answers) => {
       console.log('Inserting a new employee...\n');
       connection.query('INSERT INTO employee SET ?', answers, (err, res) => {
@@ -157,19 +163,19 @@ const start = () => {
         message: 'What would you like to do>',
         choices: [
           {
-            value: 'Add an employee',
+            value: 'Add Employee',
             name: 'Add an employee',
           },
           {
-            value: 'View',
+            value: 'View Employees',
             name: 'View all employees',
           },
           {
-            value: 'UPDATE',
+            value: 'Update Roles',
             name: 'Update employees information',
           },
           {
-            value: 'DELETE',
+            value: 'Remove Employee',
             name: 'Remove an employee',
           },
           {
@@ -180,20 +186,21 @@ const start = () => {
       },
     ])
     .then((answers) => {
+      console.log(answers);
       switch (answers.action) {
-        case 'READ':
+        case 'Add Employee':
             createEmployee();
           break;
 
-        case 'CREATE':
+        case 'View Employees':
             queryAllEmployees();
           break;
 
-        case 'updateRoles':
+        case 'Update Roles':
           updateRoles();
           break;
 
-        case 'DELETE':
+        case 'Remove Employee':
             deleteEmployee();
           break;
 
