@@ -12,6 +12,26 @@ const queryAllEmployees = () => {
     start();
   });
 };
+const queryAllRoles = () => {
+  connection.query('SELECT * FROM EmployeeTrackerDB.roles', (err, res) => {
+    if (err) throw err;
+    res.forEach(({ title, salary, department_id }) => {
+      console.log(`${title} | ${salary}} | ${department_id}`);
+    });
+    start();
+  });
+};
+const queryAllDepartments = () => {
+  connection.query('SELECT * FROM department', (err, res) => {
+    if (err) throw err;
+    res.forEach((id, name) => {
+      console.log(`${id} | ${name}`);
+    });
+    start();
+  });
+};
+
+
 
 // queryAllEmployees();
 const deleteEmployee = () => {
@@ -50,7 +70,7 @@ const deleteEmployee = () => {
 };
 
 const updateRoles = () => {
-  connection.query('SELECT * FROM EmployeeTrackerDB.employee', (selectError, employee) => {
+  connection.query('SELECT * FROM EmployeeTrackerDB.employee', (selectError, roles) => {
     if (selectError) throw selectError;
     inquirer
       .prompt([
@@ -58,16 +78,16 @@ const updateRoles = () => {
           type: 'list',
           name: 'roles',
           message: 'Select an employee to update',
-          choices: employee.map((employee) => ({
-            value: employee,
-             name: `${first_name} | ${last_name} | ${role_id} | ${manager_id}`,
+          choices: roles.map((roles) => ({
+            value: roles,
+             name: ` ${title} | ${salary} | ${role_id} | ${manager_id}`,
           })),
         },
         {
           name: 'title',
           type: 'input',
           message: 'What is the new title?',
-          default: (answers) => answers.employee.role_id,
+          default: (answers) => answers.roles.role_id,
         },
         {
           name: 'salary',
@@ -88,7 +108,7 @@ const updateRoles = () => {
         },
       ])
       .then((answers) => {
-        console.log(`Updating employee id ${answers.department_id.id}\n`);
+        console.log(`Updating employee id ${answers.roles.department_id}\n`);
 
         connection.query(
           'UPDATE employee SET ? roles ?',
@@ -148,6 +168,39 @@ const createEmployee = () => {
     });
 };
 
+const createRole = () => {
+  inquirer
+    .prompt([
+      {
+        name: 'title',
+        type: 'input',
+        message: 'Enter new role:',
+      },
+      {
+        name: 'Salary',
+        type: 'input',
+        message: 'Enter new salary:',
+      },
+      {
+        name: 'department_id',
+        type: 'list',
+        message: 'Enter the new department id',
+        choices: [ 1, 2, 3, 4],
+        
+      },
+
+    ])
+    
+    .then((answers) => {
+      console.log('Inserting a new role...\n');
+      connection.query('INSERT INTO roles SET ?', answers, (err, res) => {
+        if (err) throw err;
+        console.log(`${res.affectedRows} Role created!\n`);
+        start();
+      });
+    });
+};
+
 const quit = () => {
   connection.end();
   console.log('Good bye!');
@@ -163,16 +216,32 @@ const start = () => {
         message: 'What would you like to do>',
         choices: [
           {
-            value: 'Add Employee',
-            name: 'Add an employee',
-          },
-          {
             value: 'View Employees',
             name: 'View all employees',
           },
           {
+            value: 'View Department',
+            name: 'View all departments',
+          },
+          {
+            value: 'View Roles',
+            name: 'View all roles',
+          },
+          {
+            value: 'Add Employee',
+            name: 'Add an employee',
+          },
+          {
+            value: 'Add Roles',
+            name: 'Add a new role',
+          },
+          {
+            value: 'Add Department',
+            name: 'Add a new department',
+          },
+          {
             value: 'Update Roles',
-            name: 'Update employees information',
+            name: 'Update employees roles',
           },
           {
             value: 'Remove Employee',
@@ -188,14 +257,26 @@ const start = () => {
     .then((answers) => {
       console.log(answers);
       switch (answers.action) {
-        case 'Add Employee':
-            createEmployee();
-          break;
-
+        
         case 'View Employees':
-            queryAllEmployees();
+          queryAllEmployees();
           break;
-
+          case 'View Department':
+            queryAllDepartments();
+            break;
+            case 'View Roles':
+              queryAllRoles();
+              break;   
+              case 'Add Employee':
+                createEmployee();
+                break;   
+                case 'Add Roles':
+                  createRole();
+                  break;
+            case 'Add Department':
+            createDepartment();
+            break;
+          
         case 'Update Roles':
           updateRoles();
           break;
@@ -220,3 +301,22 @@ const start = () => {
 //   start();
 // });
 start();
+
+
+
+// Functional application.
+
+
+// GitHub repository with a unique name and a README describing the project.
+
+
+// The command-line application should allow users to:
+
+
+// Add departments, roles*, employees *
+
+
+// View departments, roles,* employees*
+
+
+// Update employee roles
