@@ -1,0 +1,24 @@
+{
+  "name": "employeeTracker",
+  "version": "1.0.0",
+  "description": "Employee adding and checking software",
+  "main": "index.js",
+  "dependencies": {
+    "inquirer": "^8.0.0",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tvnames/EmployeeCheck.git"
+  },
+  "author": "Andrew Parsons",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tvnames/EmployeeCheck/issues"
+  },
+  "homepage": "https://github.com/tvnames/EmployeeCheck#readme"
+}

@@ -1,4 +1,4 @@
-use EmployeeCheckDB;
+use EmployeeTrackerDB;
 
 insert into department (name) 
 values 

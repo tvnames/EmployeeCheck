@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS EmployeeCheckDB;
-CREATE DATABASE EmployeeCheckDB;
+DROP DATABASE IF EXISTS EmployeeTrackerDB;
+CREATE DATABASE EmployeeTrackerDB;
 
-USE EmployeeCheckDB;
+USE EmployeeTrackerDB;
 
 
 create table department (
